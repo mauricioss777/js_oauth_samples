@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JS OAuth</title>
+    <CLIENT_ID>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <meta name="google-signin-client_id" content="<YOUR_CLIENT_ID>">
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-hosted_domain" content="<YOUR_EMAIL_DOMAIN>">
+
+</head>
+<body>
+
+    <div id="my-js-signin">
+        <!-- The 'sign-in' button going to appear here -->
+    </div>
+
+    <script type="text/javascript">
+        function onSuccessGoogle(googleUser) {//Auth OK. 
+            var id_token = googleUser.getAuthResponse().id_token;
+
+            //Now, the script need to autenticate in google with php
+            $.post('<YOUR_SITE_DOMAIN>/google-auth.php', {'token_google': id_token}, function( data ) {
+                switch(data){
+                    case 'GOOGLE_AUTH_OK':
+                        //User was autenticated in js and php
+                        //in this case I just redirect user to another page
+                        window.location = '<YOUR_SITE_DOMAIN>/authenticated.php';
+                        break;
+                    case 'INCORRECT_TOKEN': 
+                        console.log('INCORRECT_TOKEN:: PHP Auth failure');
+                        break;
+                    case 'TOKEN_NOT_FOUND': 
+                        console.log('TOKEN_NOT_FOUND:: PHP Auth failure');
+                        break;
+                }
+            });
+        }
+
+        function onFailureGoogle(error) {
+            console.log( error );
+        }
+
+        /*
+         * Render the button
+         * More information:
+         * https://developers.google.com/identity/sign-in/web/reference#gapisignin2renderwzxhzdk114idwzxhzdk115_wzxhzdk116optionswzxhzdk117
+         */
+        function renderButton() {
+            gapi.signin2.render('my-js-signin', {
+                        // 'scope': 'https://www.googleapis.com/auth/plus.login',
+                        'width': 300,
+                        'height': 50,
+                        'longtitle': true,
+                        'theme': 'dark',
+                        'onsuccess': onSuccessGoogle,
+                        'onfailure': onFailureGoogle
+                    });
+        }
+
+    </script>
+</body>
+</html>
