@@ -20,12 +20,12 @@
         function onSuccessGoogle(googleUser) {//Auth OK. 
             var id_token = googleUser.getAuthResponse().id_token;
 
-            //Now, the script need to autenticate in google with php
+            //Now, the script need to authenticate in google with php
             $.post('<YOUR_SITE_DOMAIN>/google-auth.php', {'token_google': id_token}, function( data ) {
                 switch(data){
                     case 'GOOGLE_AUTH_OK':
-                        //User was autenticated in js and php
-                        //in this case I just redirect user to another page
+                        //User was authenticated into js and php
+                        //At this point, I just redirect user to another page
                         window.location = '<YOUR_SITE_DOMAIN>/authenticated.php';
                         break;
                     case 'INCORRECT_TOKEN': 
